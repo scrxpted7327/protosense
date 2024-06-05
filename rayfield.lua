@@ -14,7 +14,7 @@ local Release = "Beta 8"
 local NotificationDuration = 6.5
 local RayfieldFolder = "protosense"
 local ConfigurationFolder = RayfieldFolder.."/configs"
-local ConfigurationExtension = ".protosense"
+local ConfigurationExtension = ".config"
 
 
 
@@ -244,7 +244,7 @@ local function LoadConfiguration(Configuration)
 	local Data = HttpService:JSONDecode(Configuration)
 	for FlagName, FlagValue in next, Data do
 		if RayfieldLibrary.Flags[FlagName] then
-			spawn(function() 
+			task.spawn(function() 
 				if RayfieldLibrary.Flags[FlagName].Type == "ColorPicker" then
 					RayfieldLibrary.Flags[FlagName]:Set(UnpackColor(FlagValue))
 				else
@@ -2239,6 +2239,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 				end
 			end
 
+			if ToggleSettings.CurrentValue then
+				task.spawn(ToggleSettings.Callback, ToggleSettings.CurrentValue)
+			end
+
 			return ToggleSettings
 		end
 
@@ -2382,6 +2386,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 				if Settings.ConfigurationSaving.Enabled and SliderSettings.Flag then
 					RayfieldLibrary.Flags[SliderSettings.Flag] = SliderSettings
 				end
+			end
+
+			if SliderSettings.CurrentValue then
+				task.spawn(SliderSettings.Callback, SliderSettings.CurrentValue)
 			end
 			return SliderSettings
 		end
